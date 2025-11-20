@@ -59,7 +59,7 @@ test.describe('Check elements of homepage', () => {
     })
 
     test('footer_BBBRating', async({ page })=> {
-        await page.goto('/')
+        await page.goto('/') // main page
         const BBB = page.locator('div.footer-block__details-content')
     })
 })
