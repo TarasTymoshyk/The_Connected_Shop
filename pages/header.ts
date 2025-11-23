@@ -1,16 +1,31 @@
-import { Locator, Page, expect} from '@playwright/test'
+import { Locator, Page, expect } from '@playwright/test'
 export class Header {
-    readonly page: Page;
+    readonly page_tcs: Page;
     readonly logo_link: Locator;
+    readonly logo: Locator;
+    readonly search: Locator;
+    readonly cart: Locator;
     constructor(page: Page) {
-        this.page = page;
-        this.logo_link = page.locator('a.header__heading-link')
-    }
-    async checkLogo_link() {
-        await expect (this.logo_link).toBeVisible();
+        this.page_tcs = page;
+        this.logo_link = page.locator('a.header__heading-link');
+        this.logo = page.locator('img.header__heading-logo');
+        this.search = page.locator('form.search').first();
+        this.cart = page.locator('a.header__icon--cart').nth(3);
     }
     async verifyURL() {
-        await expect(this.page).toHaveURL('/')
-
+        await expect(this.page_tcs).toHaveURL('/')
+    }
+    async checkLogo_link() {
+        await expect(this.logo_link).toBeVisible()
+    }
+    async mainLogo() {
+        await expect(this.logo).toHaveAttribute('width', '180')
+        await expect(this.logo).toBeVisible()
+    }
+    async checkSearchAction() {
+        await expect(this.search).toHaveAttribute('action', /search/)
+    }
+    async cartLink() {
+        await expect(this.cart).toHaveAttribute('href', '/cart')
     }
 }

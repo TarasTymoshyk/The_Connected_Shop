@@ -60,6 +60,7 @@ test.describe('Check elements of homepage', () => {
 
     test('footer_BBBRating', async({ page })=> {
         await page.goto('/') // main page
-        const BBB = page.locator('div.footer-block__details-content')
+        const BBB = page.locator('img[src*="bbb-92025167.png"]')
+        await expect(BBB).toHaveAttribute('src', 'https://seal-seflorida.bbb.org/seals/black-seal-293-61-bbb-92025167.png')
     })
 })
