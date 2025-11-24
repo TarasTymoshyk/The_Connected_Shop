@@ -12,16 +12,16 @@ export class Header {
         this.search = page.locator('form.search').first();
         this.cart = page.locator('a.header__icon--cart').nth(3);
     }
-    async verifyURL() {
-        await expect(this.page_tcs).toHaveURL('/')
-    }
-    async checkLogo_link() {
+        async checkLogo_link() {
         await expect(this.logo_link).toBeVisible()
+        await expect(this.logo_link).toHaveAttribute('href', '/')
     }
+
     async mainLogo() {
         await expect(this.logo).toHaveAttribute('width', '180')
         await expect(this.logo).toBeVisible()
     }
+    
     async checkSearchAction() {
         await expect(this.search).toHaveAttribute('action', /search/)
     }
