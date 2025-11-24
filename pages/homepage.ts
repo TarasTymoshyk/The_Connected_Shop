@@ -1,14 +1,14 @@
 import { Page, expect} from '@playwright/test'
 export class HomePage {
-    readonly page_tcs: Page;
+    readonly page_: Page;
     constructor(page: Page) {
-        this.page_tcs = page;
+        this.page_ = page;
     }
     async openHomePage() {
-        await this.page_tcs.goto('/')
+        await this.page_.goto('/')
     }
     async verifyURL() {
-        await expect(this.page_tcs).toHaveURL('/')
+        await expect(this.page_).toHaveURL('/')
 
     }
 }
