@@ -1,4 +1,4 @@
-import { Page, expect} from '@playwright/test'
+import { Page, expect } from '@playwright/test'
 export class HomePage {
     readonly page_: Page;
     constructor(page: Page) {

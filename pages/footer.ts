@@ -4,13 +4,17 @@ export class Footer {
     readonly BBBRating: Locator;
     constructor(page: Page) {
         this.our_story = page.getByRole('link', { name: 'About us' });
-        this.BBBRating = page.locator('div.footer-block__details-content');
+        this.BBBRating = page.locator('.footer-block__details-content a[href*="bbb.org"]').nth(0);
     }
     async ourStoryLink() {
         await expect(this.our_story).toHaveAttribute('href', '/pages/about-us');
     }
-    async BBB() {
-        await expect(this.BBBRating).toHaveAttribute('src', 'https://seal-seflorida.bbb.org/seals/black-seal-293-61-bbb-92025167.png');
+    async bbb() {
+        const container = this.BBBRating;
+        const anchor = container.locator('a');
+        const img = container.locator('img');
+
+        await expect(img).toHaveAttribute('alt', 'Connected Shop Inc BBB Business Review');
 
     }
 }

@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test'
-export class Header {
+export class Search {
     readonly search_area: Locator
     readonly search_placeholder: Locator
     readonly search_icon: Locator
@@ -7,7 +7,7 @@ export class Header {
     constructor(page: Page) {
         this.search_area = page.locator('form.search').first()
         this.search_placeholder = page.locator('#Search-In-Inline')
-        this.search_icon = page.locator('use[href="#icon-search"], use[*|href="#icon-search"]')
+        this.search_icon = page.locator('use[href="#icon-search"], use[*|href="#icon-search"]').nth(0)
         this.search_autocomplete_default = this.search_placeholder
     }
     async checkSearchAction() {
