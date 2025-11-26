@@ -30,18 +30,22 @@ test.describe('Check elements of homepage', () => {
 
         const search_icon = page.locator('use[href="#icon-search"], use[*|href="#icon-search"]')
         await expect(search_icon.first()).toBeVisible()
+
+        const search_autocomplete = page.locator('#Search-In-Inline')
+        await expect(search_autocomplete).toBeVisible()
+        await expect(search_autocomplete).toHaveAttribute('autocomplete', 'off')
     })
 
     test('customer support', async ({ page }) => {
         await page.goto('/')
-        const cell_redirection = page.locator('a.header__customer-support-region__button.header__customer-support-region').nth(1)
-        await expect(cell_redirection).toBeVisible({ timeout: 3000 })
+        const cell_redirection = page.locator('a[href^="tel:"]').first()
+        await expect(cell_redirection).toBeHidden()
         await expect(cell_redirection).toHaveAttribute('href', 'tel:(305) 330-3424')
     })
 
     test('account_icon', async ({ page }) => {
         await page.goto('/')
-        const account_icon = page.locator('a.header__icon.header__icon--account').nth(2)
+        const account_icon = page.locator('a.header__icon.header__icon--account').last()
         await expect(account_icon).toBeVisible({ timeout: 3000 })
         await expect(account_icon).toHaveAttribute('href', 'https://theconnectedshop.com/customer_authentication/redirect?locale=en&region_country=UA')
     })

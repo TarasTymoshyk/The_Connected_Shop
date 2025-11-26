@@ -3,13 +3,11 @@ export class Header {
     readonly page_tcs: Page;
     readonly logo_link: Locator;
     readonly logo: Locator;
-    readonly search: Locator;
     readonly cart: Locator;
     constructor(page: Page) {
         this.page_tcs = page;
         this.logo_link = page.locator('a.header__heading-link');
         this.logo = page.locator('img.header__heading-logo');
-        this.search = page.locator('form.search').first();
         this.cart = page.locator('a.header__icon--cart').nth(3);
     }
         async checkLogo_link() {
@@ -22,9 +20,6 @@ export class Header {
         await expect(this.logo).toBeVisible()
     }
     
-    async checkSearchAction() {
-        await expect(this.search).toHaveAttribute('action', /search/)
-    }
     async cartLink() {
         await expect(this.cart).toHaveAttribute('href', '/cart')
     }
