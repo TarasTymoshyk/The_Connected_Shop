@@ -16,10 +16,7 @@ export class SearchValidation {
     }
 
     async verifySearchResults() {
-        // Чекаємо що URL містить search
         await expect(this.pageS).toHaveURL(/search/)
-
-        // Перевіряємо що є хоч щось на сторінці (не порожня)
         const bodyText = await this.pageS.textContent('body')
         await expect(bodyText).toContain('Smart Door Lock Slim')
     }
