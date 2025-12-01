@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test'
+import { expectVisible, fillElement } from '../utils/GlobalMethod'
 
 export class SearchValidation {
     readonly pageS: Page
@@ -10,7 +11,9 @@ export class SearchValidation {
     }
 
     async searchData(query: string) {
-        await this.searchInput.fill(query)
+        // await this.searchInput.fill(query)
+        await expectVisible(this.searchInput, 'Search Input')
+        await fillElement(this.searchInput, query, 'Search Input')
         await this.searchInput.press('Enter')
         await this.pageS.waitForURL(/search/, { timeout: 3000 })
     }
