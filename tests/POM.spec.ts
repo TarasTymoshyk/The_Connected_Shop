@@ -3,7 +3,7 @@ import { HomePage } from '../pages/homepage'
 import { Header } from '../pages/header'
 import { Footer } from '../pages/footer'
 import { Search } from '../pages/Search'
-import {SearchValidation} from '../pages/SearchValidation'
+import { SearchValidation } from '../pages/SearchValidation'
 
 test.describe('Check elements of homepage', () => {
     let homepage: HomePage
@@ -36,4 +36,3 @@ test.describe('Check elements of homepage', () => {
         await search_test.verifyNoResults()
     })
 })
-// commit213123
