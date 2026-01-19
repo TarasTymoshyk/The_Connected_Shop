@@ -1,27 +1,147 @@
+# name: Playwright Tests
+ 
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+#   workflow_dispatch:
+ 
+# permissions:
+#   contents: read
+#   pages: write
+#   id-token: write
+ 
+# jobs:
+#   test:
+#     name: Run Playwright Tests
+#     runs-on: ubuntu-latest
+ 
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+ 
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#           cache: 'npm'
+ 
+#       - name: Install dependencies
+#         run: npm ci
+ 
+#       - name: Install Playwright browsers
+#         run: npx playwright install --with-deps
+ 
+#       - name: Run Playwright tests
+#         run: npx playwright test
+#         continue-on-error: true
+ 
+#       - name: Upload Playwright Report artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 7
+ 
+#       - name: Slack notification (success)
+#         if: success()
+#         run: |
+#           curl -X POST -H 'Content-type: application/json' \
+#           --data '{
+#             "text": "*Playwright tests PASSED*\nRepository: *'${{ github.repository }}'*\nBranch: *'${{ github.ref_name }}'*"
+#           }' ${{ secrets.SLACK_WEBHOOK_URL }}
+ 
+#       - name: Slack notification (failure)
+#         if: failure()
+#         run: |
+#           curl -X POST -H 'Content-type: application/json' \
+#           --data '{
+#             "text": " *Playwright tests FAILED*\nRepository: *'${{ github.repository }}'*\nBranch: *'${{ github.ref_name }}'*\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+#           }' ${{ secrets.SLACK_WEBHOOK_URL }}
+ 
+#   deploy-report:
+#     name: Deploy Playwright Report to GitHub Pages
+#     needs: test
+#     runs-on: ubuntu-latest
+ 
+#     steps:
+#       - name: Download report artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: playwright-report
+#           path: playwright-report
+ 
+#       - name: Setup Pages
+#         uses: actions/configure-pages@v5
+ 
+#       - name: Upload Pages artifact
+#         uses: actions/upload-pages-artifact@v3
+#         with:
+#           path: playwright-report
+ 
+#       - name: Deploy to GitHub Pages
+#         id: deployment
+#         uses: actions/deploy-pages@v4
+
 name: Playwright Tests
+ 
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+ 
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+ 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v4
+ 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+ 
+      # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+ 
+      - name: Install dependencies
+        run: npm ci
+ 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+ 
+      - name: Run Playwright tests (parallel)
+        run: npx playwright test --workers=4
+ 
+      # Upload artifacts only if tests failed
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+ 
+      # Cleanup
+      - name: Cleanup workspace
+        if: always()
+        run: |
+          echo "Cleaning up artifacts and caches..."
+          rm -rf test-results
+          rm -rf playwright-report
+          npm cache clean --force || true
+          df -h

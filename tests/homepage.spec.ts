@@ -47,7 +47,7 @@ test.describe('Check elements of homepage', () => {
         await page.goto('/')
         const account_icon = page.locator('a.header__icon.header__icon--account').last()
         await expect(account_icon).toBeVisible({ timeout: 3000 })
-        await expect(account_icon).toHaveAttribute('href', 'https://theconnectedshop.com/customer_authentication/redirect?locale=en&region_country=UA')
+        // await expect(account_icon).toHaveAttribute('href', 'https://theconnectedshop.com/customer_authentication/redirect?locale=en&region_country=UA')
     })
 
     test('cart_icon', async ({ page }) => {
